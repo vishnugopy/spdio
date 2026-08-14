@@ -6,11 +6,11 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-import numpy as np
+import app_paths
 
-BASE = Path(__file__).resolve().parent
-MODELS_DIR = BASE / "models"
-MODEL_PATH = MODELS_DIR / "baseline.pth"
+
+def model_path():
+    return app_paths.models_dir() / "baseline.pth"
 MODEL_RELEASE_URL = (
     "https://github.com/tsurumeso/vocal-remover/releases/download/"
     "v5.1.1/vocal-remover-v5.1.1.zip"
@@ -78,9 +78,10 @@ def encode_mp3(wav_path, mp3_path, check_cancel=None):
 
 
 def ensure_model(progress_cb=None):
-    if MODEL_PATH.exists():
+    dest = model_path()
+    if dest.exists():
         return
-    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    dest.parent.mkdir(parents=True, exist_ok=True)
     if progress_cb:
         progress_cb("Downloading the AI model (first run only)...")
     tmp_zip = None
@@ -93,7 +94,7 @@ def ensure_model(progress_cb=None):
             names = [n for n in zf.namelist() if n.endswith("baseline.pth")]
             if not names:
                 raise RuntimeError("Model file not found in the downloaded archive")
-            with zf.open(names[0]) as src, open(MODEL_PATH, "wb") as dst:
+            with zf.open(names[0]) as src, open(dest, "wb") as dst:
                 shutil.copyfileobj(src, dst)
     finally:
         if tmp_zip:
@@ -110,6 +111,9 @@ class VocalSeparator:
         self._device = None
 
     def load(self, progress_cb=None):
+        import engine_bootstrap
+
+        engine_bootstrap.activate()
         ensure_model(progress_cb)
         if self._model is not None:
             return
@@ -125,12 +129,13 @@ class VocalSeparator:
             if torch.backends.mps.is_available() and torch.backends.mps.is_built():
                 device = torch.device("mps")
             model = nets.CascadedNet(N_FFT, HOP_LENGTH, 32, 128)
-            model.load_state_dict(torch.load(str(MODEL_PATH), map_location="cpu"))
+            model.load_state_dict(torch.load(str(model_path()), map_location="cpu"))
             model.to(device)
             self._model = model
             self._device = device
 
     def _separate_masks(self, X_spec, progress_cb=None):
+        import numpy as np
         import torch
 
         from lib import dataset
@@ -162,6 +167,7 @@ class VocalSeparator:
         return np.concatenate(mask_list, axis=2)[:, :, :n_frame]
 
     def separate(self, input_path, out_dir, progress_cb=None, check_cancel=None):
+        import numpy as np
         import soundfile as sf
 
         from lib import spec_utils
