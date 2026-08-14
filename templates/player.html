@@ -9,21 +9,26 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <main class="container">
+  <main class="container player-page">
     <header class="app-header">
-      <a href="/" class="btn btn-outline btn-sm back"><i data-lucide="arrow-left" class="ic"></i> Back</a>
+      <a href="/" class="btn btn-outline btn-sm back" aria-label="Back to song list"><i data-lucide="arrow-left" class="ic"></i> Back</a>
       <div class="app-title">
-        <h1>{{ job.original_name }}</h1>
+        <h1 title="{{ job.original_name }}">{{ job.original_name }}</h1>
         <p>Vocals + Music player</p>
       </div>
     </header>
 
     <div class="card player">
+      <div id="player-loading" class="player-loading" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <p>Preparing player…</p>
+      </div>
+
       <div class="player-track" data-stream="vocals">
         <div class="track-top">
           <span class="track-label track-vocals">Vocals</span>
           <div class="track-tools">
-            <button class="mute-btn" data-mute="vocals" title="Mute vocals"><i data-lucide="volume-2" class="ic"></i></button>
+            <button class="mute-btn" data-mute="vocals" title="Mute vocals"><i data-lucide="volume-2" class="ic"></i><span class="mute-label">Mute</span></button>
             <input type="range" class="vol" data-vol="vocals" min="0" max="100" value="100" />
           </div>
         </div>
@@ -34,7 +39,7 @@
         <div class="track-top">
           <span class="track-label track-music">Music</span>
           <div class="track-tools">
-            <button class="mute-btn" data-mute="music" title="Mute music"><i data-lucide="volume-2" class="ic"></i></button>
+            <button class="mute-btn" data-mute="music" title="Mute music"><i data-lucide="volume-2" class="ic"></i><span class="mute-label">Mute</span></button>
             <input type="range" class="vol" data-vol="music" min="0" max="100" value="100" />
           </div>
         </div>
@@ -49,12 +54,19 @@
       </div>
 
       <div class="player-downloads">
-        <a class="btn btn-outline" href="/api/download/{{ job.id }}/vocals" download="{{ vocal_name }}">
+        <a class="btn btn-vocals" href="/api/download/{{ job.id }}/vocals" download="{{ vocal_name }}">
           <i data-lucide="download" class="ic"></i> Download Vocals
         </a>
-        <a class="btn btn-outline" href="/api/download/{{ job.id }}/music" download="{{ music_name }}">
+        <a class="btn btn-music" href="/api/download/{{ job.id }}/music" download="{{ music_name }}">
           <i data-lucide="download" class="ic"></i> Download Music
         </a>
+      </div>
+
+      <div class="player-hints">
+        <span><kbd>Space</kbd> Play / Pause</span>
+        <span><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> Seek &plusmn;5s</span>
+        <span><kbd>&#8593;</kbd> Mute vocals</span>
+        <span><kbd>&#8595;</kbd> Mute music</span>
       </div>
     </div>
   </main>

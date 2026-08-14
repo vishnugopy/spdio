@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import signal
 import sys
 import threading
 import time
@@ -22,14 +23,11 @@ from flask import (
 from separator import VocalSeparator
 
 if getattr(sys, "frozen", False):
-    exe = Path(sys.executable).resolve()
-    if sys.platform == "darwin" and exe.parent.name == "MacOS":
-        BASE = exe.parent.parent.parent.parent
-    else:
-        BASE = exe.parent
+    # Packaged app: keep runtime data in a writable user folder so the
+    # bundle can stay read-only and code-signed.
+    DATA = Path.home() / "Library" / "Application Support" / "SongSplitter" / "data"
 else:
-    BASE = Path(__file__).resolve().parent
-DATA = BASE / "data"
+    DATA = Path(__file__).resolve().parent / "data"
 JOBS_DIR = DATA / "jobs"
 JOBS_FILE = DATA / "jobs.json"
 
@@ -432,9 +430,16 @@ def _open_browser(port):
         pass
 
 
+def _handle_sigterm(signum, frame):
+    """Exit quickly and cleanly when the app shell terminates us."""
+    threading.Thread(target=_force_exit, daemon=True).start()
+
+
 if __name__ == "__main__":
     _load_jobs()
     threading.Thread(target=_worker_loop, daemon=True).start()
     port = int(os.environ.get("PORT", "0")) or _find_free_port()
-    threading.Thread(target=_open_browser, args=(port,), daemon=True).start()
+    if not os.environ.get("SONGSPLITTER_NO_BROWSER"):
+        threading.Thread(target=_open_browser, args=(port,), daemon=True).start()
+    signal.signal(signal.SIGTERM, _handle_sigterm)
     app.run(host="127.0.0.1", port=port, threaded=True)

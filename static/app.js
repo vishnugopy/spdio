@@ -351,19 +351,12 @@
     if (dragDepth === 0) overlay.classList.remove("active");
   });
 
-  overlay.addEventListener("drop", (e) => {
-    if (!hasFiles(e)) return;
-    e.preventDefault();
-    dragDepth = 0;
-    overlay.classList.remove("active");
-    for (const file of e.dataTransfer.files) handleFile(file);
-  });
-
   window.addEventListener("drop", (e) => {
     if (!hasFiles(e)) return;
     e.preventDefault();
     dragDepth = 0;
     overlay.classList.remove("active");
+    dropzone.classList.remove("dragover");
     for (const file of e.dataTransfer.files) handleFile(file);
   });
 
@@ -386,12 +379,6 @@
       if (hasFiles(e)) dropzone.classList.remove("dragover");
     })
   );
-  dropzone.addEventListener("drop", (e) => {
-    if (hasFiles(e) && e.dataTransfer.files.length) {
-      e.preventDefault();
-      for (const file of e.dataTransfer.files) handleFile(file);
-    }
-  });
 
   // ---- load saved history ----
   fetch("/api/history")

@@ -18,6 +18,9 @@ dist/
 SongSplitter-mac.zip
 *.log
 
+# Secrets - credentials for notarization (never commit these!)
+.env
+
 # macOS junk
 .DS_Store
 
