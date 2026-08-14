@@ -526,6 +526,48 @@ body {
   color: hsl(var(--muted-foreground));
 }
 
+.engine-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(var(--background) / 0.96);
+}
+
+.engine-box {
+  text-align: center;
+  color: hsl(var(--foreground));
+  max-width: 360px;
+  padding: 24px;
+}
+
+.engine-box svg {
+  width: 44px;
+  height: 44px;
+  color: hsl(var(--brand));
+  margin-bottom: 16px;
+}
+
+.engine-box p {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.engine-progress {
+  width: 100%;
+  margin: 0 auto 12px;
+}
+
+.engine-detail {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  color: hsl(var(--muted-foreground));
+}
+
 /* Song player page */
 .container.player-page {
   max-width: min(70%, 960px);

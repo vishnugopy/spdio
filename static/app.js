@@ -12,6 +12,7 @@
   let dragDepth = 0;
 
   const ACTIVE = ["queued", "loading", "working"];
+  let engineReady = false;
 
   function icon(name) {
     return '<i data-lucide="' + name + '" class="ic"></i>';
@@ -182,6 +183,10 @@
 
   function handleFile(file) {
     if (!file) return;
+    if (!engineReady) {
+      showError("The audio engine is still downloading.");
+      return;
+    }
     const form = new FormData();
     form.append("file", file);
     fetch("/api/upload", { method: "POST", body: form })
@@ -379,6 +384,48 @@
       if (hasFiles(e)) dropzone.classList.remove("dragover");
     })
   );
+
+  // ---- first-run engine ----
+  const engineOverlay = document.getElementById("engine-overlay");
+  const engineMessage = document.getElementById("engine-message");
+  const engineBar = document.getElementById("engine-bar");
+  const engineDetail = document.getElementById("engine-detail");
+  const engineRetry = document.getElementById("engine-retry");
+
+  function applyEngine(st) {
+    engineReady = !!st.ready;
+    if (engineReady) {
+      hide(engineOverlay);
+      return;
+    }
+    show(engineOverlay);
+    engineMessage.textContent = st.message || st.error || "Downloading the audio engine…";
+    const pct = typeof st.progress === "number" ? st.progress : 0;
+    if (engineBar) engineBar.style.width = Math.min(pct, 100) + "%";
+    engineDetail.textContent = st.error ? st.error : (pct ? pct + "%" : "");
+    if (st.error && !st.downloading) show(engineRetry);
+    else hide(engineRetry);
+    refreshIcons();
+  }
+
+  function pollEngine() {
+    fetch("/api/engine")
+      .then((r) => r.json())
+      .then((st) => {
+        applyEngine(st);
+        if (!st.ready) setTimeout(pollEngine, 500);
+      })
+      .catch(() => setTimeout(pollEngine, 1500));
+  }
+
+  if (engineRetry) {
+    engineRetry.addEventListener("click", () => {
+      engineRetry.hidden = true;
+      fetch("/api/engine/retry", { method: "POST" }).catch(() => {});
+    });
+  }
+
+  pollEngine();
 
   // ---- load saved history ----
   fetch("/api/history")

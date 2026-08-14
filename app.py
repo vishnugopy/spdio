@@ -22,6 +22,7 @@ from flask import (
 
 import app_paths
 import audio_sniff
+import engine_bootstrap
 from separator import VocalSeparator
 
 app_paths.ensure_dirs()
@@ -226,8 +227,21 @@ def manifest():
     )
 
 
+@app.get("/api/engine")
+def engine_status():
+    return jsonify(engine_bootstrap.status())
+
+
+@app.post("/api/engine/retry")
+def engine_retry():
+    engine_bootstrap.retry()
+    return jsonify(engine_bootstrap.status())
+
+
 @app.post("/api/upload")
 def upload():
+    if engine_bootstrap.needs_download():
+        return jsonify(error="The audio engine is still downloading."), 503
     file = request.files.get("file")
     if not file or not file.filename:
         return jsonify(error="No file selected."), 400
@@ -403,6 +417,13 @@ def _open_browser(port):
         pass
 
 
+def _download_engine():
+    try:
+        engine_bootstrap.ensure_engine()
+    except engine_bootstrap.EngineError:
+        pass
+
+
 def _handle_sigterm(signum, frame):
     """Exit quickly and cleanly when the app shell terminates us."""
     threading.Thread(target=_force_exit, daemon=True).start()
@@ -411,6 +432,8 @@ def _handle_sigterm(signum, frame):
 if __name__ == "__main__":
     _load_jobs()
     threading.Thread(target=_worker_loop, daemon=True).start()
+    if engine_bootstrap.needs_download():
+        threading.Thread(target=_download_engine, daemon=True).start()
     port = int(os.environ.get("PORT", "0")) or _find_free_port()
     if not os.environ.get("SONGSPLITTER_NO_BROWSER"):
         threading.Thread(target=_open_browser, args=(port,), daemon=True).start()

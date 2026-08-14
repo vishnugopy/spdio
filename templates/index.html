@@ -12,6 +12,20 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <div id="engine-overlay" class="engine-overlay" hidden>
+    <div class="engine-box">
+      <i data-lucide="download" class="ic ic-lg"></i>
+      <p id="engine-message">Downloading the audio engine…</p>
+      <div class="progress-track engine-progress">
+        <div id="engine-bar" class="progress-bar"></div>
+      </div>
+      <span id="engine-detail" class="engine-detail"></span>
+      <button id="engine-retry" class="btn btn-outline btn-sm" hidden>
+        <i data-lucide="refresh-cw" class="ic"></i> Retry
+      </button>
+    </div>
+  </div>
+
   <!-- Full-page drop overlay -->
   <div id="drop-overlay" class="drop-overlay">
     <div class="drop-overlay-box">
