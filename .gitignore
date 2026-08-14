@@ -15,7 +15,8 @@ data/
 # Build / packaging output
 build/
 dist/
-SongSplitter-mac.zip
+*.app/
+*.zip
 *.log
 
 # Secrets - credentials for notarization (never commit these!)
