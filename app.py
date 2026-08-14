@@ -20,16 +20,13 @@ from flask import (
     send_from_directory,
 )
 
+import app_paths
 from separator import VocalSeparator
 
-if getattr(sys, "frozen", False):
-    # Packaged app: keep runtime data in a writable user folder so the
-    # bundle can stay read-only and code-signed.
-    DATA = Path.home() / "Library" / "Application Support" / "SongSplitter" / "data"
-else:
-    DATA = Path(__file__).resolve().parent / "data"
-JOBS_DIR = DATA / "jobs"
-JOBS_FILE = DATA / "jobs.json"
+app_paths.ensure_dirs()
+DATA = app_paths.jobs_root()
+JOBS_DIR = app_paths.jobs_dir()
+JOBS_FILE = app_paths.jobs_file()
 
 MAX_UPLOAD = 500 * 1024 * 1024
 
