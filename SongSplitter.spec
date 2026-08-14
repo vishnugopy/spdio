@@ -1,5 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
+import sys
+from pathlib import Path
+
 from PyInstaller.utils.hooks import collect_all
+
+sys.path.insert(0, str(Path(globals().get("SPECPATH", Path.cwd()))))
+from engine_stdlib import ENGINE_STDLIB
 
 datas = []
 binaries = []
@@ -21,6 +27,7 @@ hiddenimports += [
     "lib.nets",
     "lib.spec_utils",
 ]
+hiddenimports += list(ENGINE_STDLIB)
 
 datas += [
     ("templates", "templates"),

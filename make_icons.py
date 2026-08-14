@@ -38,31 +38,27 @@ def gradient(size):
 
 
 def render(size, scale=1.0, cx=0.5, cy=0.5, rounded=True):
-    s = scale * size / MASTER
-
-    def P(x, y):
-        return (cx * size + (x - MASTER / 2) * s, cy * size + (y - MASTER / 2) * s)
-
     img = gradient(size)
     if rounded:
         m = Image.new("L", (size, size), 0)
-        ImageDraw.Draw(m).rounded_rectangle([0, 0, size - 1, size - 1], radius=size * 0.225, fill=255)
+        ImageDraw.Draw(m).rounded_rectangle(
+            [0, 0, size - 1, size - 1], radius=size * 0.225, fill=255
+        )
         img.putalpha(m)
 
     d = ImageDraw.Draw(img)
-
-    def rrect(x0, y0, x1, y1, rad=None):
-        if rad is None:
-            rad = min(x1 - x0, y1 - y0) / 2
-        d.rounded_rectangle([*P(x0, y0), *P(x1, y1)], radius=max(0.5, rad * s), fill=WHITE)
-
-    # note head
-    rrect(300, 530, 500, 690)
-    # note stem
-    rrect(472, 240, 512, 690)
-    # note flag
-    d.pieslice([*P(505, 190), *P(720, 380)], start=0, end=100, fill=WHITE)
-
+    # Lucide "audio-lines" in a 24x24 viewBox, mapped into the icon.
+    pad = (1 - 0.56 * scale) / 2
+    left = size * (cx - 0.5 + pad)
+    top = size * (cy - 0.5 + pad)
+    box = size * 0.56 * scale
+    stroke = max(1.5, box * (2 / 24))
+    bars = ((2, 10, 3), (6, 6, 11), (10, 3, 18), (14, 8, 7), (18, 5, 13), (22, 10, 3))
+    for x, y, h in bars:
+        px = left + box * (x / 24)
+        y0 = top + box * (y / 24)
+        y1 = top + box * ((y + h) / 24)
+        d.line([(px, y0), (px, y1)], fill=WHITE, width=int(round(stroke)))
     return img
 
 
