@@ -1,6 +1,6 @@
 {
-  "name": "Song Splitter",
-  "short_name": "SongSplitter",
+  "name": "Spdio",
+  "short_name": "Spdio",
   "description": "Separate vocals from music in your songs.",
   "start_url": "/",
   "scope": "/",

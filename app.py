@@ -25,6 +25,7 @@ import logging
 import app_paths
 import audio_sniff
 import engine_bootstrap
+import version
 from separator import VocalSeparator
 
 app_paths.ensure_dirs()
@@ -231,6 +232,25 @@ def service_worker():
 def manifest():
     return send_from_directory(
         app.static_folder, "manifest.webmanifest", mimetype="application/manifest+json"
+    )
+
+
+@app.context_processor
+def inject_brand():
+    return {
+        "app_name": version.APP_DISPLAY_NAME,
+        "app_version": version.VERSION,
+        "author": version.AUTHOR,
+        "author_url": version.AUTHOR_URL,
+    }
+
+
+@app.get("/api/version")
+def api_version():
+    return jsonify(
+        name=version.APP_DISPLAY_NAME,
+        version=version.VERSION,
+        author=version.AUTHOR,
     )
 
 
@@ -466,7 +486,7 @@ if __name__ == "__main__":
     if use_window:
         threading.Thread(target=serve, daemon=True).start()
         if not _wait_ready(port):
-            print("Song Splitter could not start the local server.", file=sys.stderr)
+            print("%s could not start the local server." % version.APP_DISPLAY_NAME, file=sys.stderr)
             sys.exit(1)
         import desktop
 

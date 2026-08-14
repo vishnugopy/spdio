@@ -1,8 +1,8 @@
 {
-  "name": "song-splitter",
-  "version": "1.0.0",
+  "name": "spdio",
+  "version": "1.1.0",
   "private": true,
-  "description": "Song Splitter - separate vocals from music",
+  "description": "Spdio - separate vocals from music",
   "scripts": {
     "build": "./build.sh"
   }

@@ -5,21 +5,26 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-ABOUT_TEXT = "Song Splitter\nVersion 1.0.0\nRuns entirely on this computer."
+import version
+
+ABOUT_TEXT = (
+    "%s\nVersion %s\nby %s\nRuns entirely on this computer."
+    % (version.APP_DISPLAY_NAME, version.VERSION, version.AUTHOR)
+)
 HELP_TEXT = (
     "Drop songs on the window or use File → Open. "
     "Vocals and music stay on this computer."
 )
 
 _MENU = [
-    ("Song Splitter", ["About Song Splitter", "Quit"]),
+    (version.APP_DISPLAY_NAME, ["About %s" % version.APP_DISPLAY_NAME, "Quit"]),
     ("File", ["Open songs…"]),
     ("Window", ["Minimize", "Close"]),
     ("Help", ["How to use"]),
 ]
 if sys.platform == "darwin":
     _MENU = [
-        ("Song Splitter", ["About Song Splitter", "Hide", "Quit"]),
+        (version.APP_DISPLAY_NAME, ["About %s" % version.APP_DISPLAY_NAME, "Hide", "Quit"]),
         ("File", ["Open songs…"]),
         ("Window", ["Minimize", "Close"]),
         ("Help", ["How to use"]),
@@ -41,7 +46,7 @@ def menu_items():
 
     def about():
         if _window:
-            _window.create_confirmation_dialog("Song Splitter", ABOUT_TEXT)
+            _window.create_confirmation_dialog(version.APP_DISPLAY_NAME, ABOUT_TEXT)
 
     def help_():
         if _window:
@@ -69,7 +74,7 @@ def menu_items():
             open_songs(_window)
 
     actions = {
-        "About Song Splitter": about,
+        "About %s" % version.APP_DISPLAY_NAME: about,
         "Quit": quit_,
         "Hide": hide,
         "Open songs…": open_,
@@ -126,7 +131,7 @@ def open_songs(window):
             post_local_file(_port, path)
         except Exception:
             window.create_confirmation_dialog(
-                "Song Splitter", "Could not add %s." % Path(path).name
+                version.APP_DISPLAY_NAME, "Could not add %s." % Path(path).name
             )
 
 
@@ -145,7 +150,7 @@ def save_stem(window, job_id, stream, suggested_name):
         with urllib.request.urlopen(url, timeout=60) as resp:
             Path(dest).write_bytes(resp.read())
     except (urllib.error.URLError, OSError) as exc:
-        window.create_confirmation_dialog("Song Splitter", "Could not save the file.")
+        window.create_confirmation_dialog(version.APP_DISPLAY_NAME, "Could not save the file.")
         raise exc
 
 
@@ -171,7 +176,7 @@ def start_window(port):
     global _port, _window
     _port = int(port)
     _window = webview.create_window(
-        "Song Splitter",
+        version.APP_DISPLAY_NAME,
         "http://127.0.0.1:%s/" % _port,
         width=1024,
         height=700,

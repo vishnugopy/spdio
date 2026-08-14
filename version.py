@@ -1,0 +1,7 @@
+APP_DISPLAY_NAME = "Spdio"
+APP_DATA_NAME = "Spdio"
+LEGACY_DATA_NAME = "SongSplitter"
+VERSION = "1.1.0"
+AUTHOR = "vishnugopy"
+AUTHOR_URL = "https://vishnugopy.dev"
+BUNDLE_ID = "com.vishnugopy.spdio"

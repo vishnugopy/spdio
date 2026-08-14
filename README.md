@@ -1,4 +1,4 @@
-# Song Splitter
+# Spdio
 
 A tiny web app that splits any song into two files:
 

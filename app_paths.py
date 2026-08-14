@@ -2,7 +2,10 @@ import os
 import sys
 from pathlib import Path
 
-APP_NAME = "SongSplitter"
+import version
+
+APP_NAME = version.APP_DATA_NAME
+LEGACY_APP_NAME = version.LEGACY_DATA_NAME
 
 
 def is_frozen():
@@ -25,6 +28,27 @@ def user_root():
     if xdg:
         return Path(xdg) / APP_NAME
     return Path.home() / ".local" / "share" / APP_NAME
+
+
+def legacy_user_root():
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / LEGACY_APP_NAME
+    if sys.platform == "win32":
+        roaming = os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming")
+        return Path(roaming) / LEGACY_APP_NAME
+    xdg = os.environ.get("XDG_DATA_HOME")
+    if xdg:
+        return Path(xdg) / LEGACY_APP_NAME
+    return Path.home() / ".local" / "share" / LEGACY_APP_NAME
+
+
+def migrate_legacy_data():
+    dest = user_root()
+    src = legacy_user_root()
+    if dest.exists() or not src.exists():
+        return
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    src.rename(dest)
 
 
 def jobs_root():
@@ -54,6 +78,7 @@ def log_path():
 
 
 def ensure_dirs():
+    migrate_legacy_data()
     jobs_dir().mkdir(parents=True, exist_ok=True)
     engine_dir().mkdir(parents=True, exist_ok=True)
     models_dir().mkdir(parents=True, exist_ok=True)

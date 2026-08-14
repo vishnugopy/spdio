@@ -2,12 +2,12 @@
 set -e
 cd "$(dirname "$0")"
 
-echo "==> Building slim Song Splitter.app ..."
+echo "==> Building slim Spdio.app ..."
 ./venv/bin/pyinstaller --noconfirm SongSplitter.spec
 
-if find dist/SongSplitter.app -iname '*torch*' | grep -q .; then
+if find dist/Spdio.app -iname '*torch*' | grep -q .; then
   echo "ERROR: torch leaked into the slim bundle" >&2
-  find dist/SongSplitter.app -iname '*torch*' >&2
+  find dist/Spdio.app -iname '*torch*' >&2
   exit 1
 fi
 
@@ -37,8 +37,8 @@ if [ -n "$IDENTITY" ]; then
   codesign --force --deep --options runtime --timestamp \
     --entitlements entitlements.plist \
     --sign "$IDENTITY" \
-    dist/SongSplitter.app
-  codesign --verify --deep --strict dist/SongSplitter.app && echo "    signature OK"
+    dist/Spdio.app
+  codesign --verify --deep --strict dist/Spdio.app && echo "    signature OK"
 elif [ -n "$FALLBACK" ]; then
   echo "==> Signing with local development certificate (not notarizable)."
   echo "    Create a 'Developer ID Application' certificate in your Apple Developer account to notarize."
@@ -46,8 +46,8 @@ elif [ -n "$FALLBACK" ]; then
   codesign --force --deep --options runtime \
     --entitlements entitlements.plist \
     --sign "$IDENTITY" \
-    dist/SongSplitter.app
-  codesign --verify --deep --strict dist/SongSplitter.app && echo "    signature OK"
+    dist/Spdio.app
+  codesign --verify --deep --strict dist/Spdio.app && echo "    signature OK"
 else
   echo "==> No code-signing certificate found - skipping sign."
 fi
@@ -60,28 +60,28 @@ if [ -n "${APPLE_ID:-}" ] && [ -n "${APP_PASSWORD:-}" ] && [ -n "${TEAM_ID:-}" ]
     echo "    Choose 'Developer ID Application', install the .cer, then re-run ./build.sh"
   else
   echo "==> Notarizing ..."
-  rm -f /tmp/songsplitter-notarize.zip
-  ditto -c -k --keepParent dist/SongSplitter.app /tmp/songsplitter-notarize.zip
-  xcrun notarytool submit /tmp/songsplitter-notarize.zip \
+  rm -f /tmp/spdio-notarize.zip
+  ditto -c -k --keepParent dist/Spdio.app /tmp/spdio-notarize.zip
+  xcrun notarytool submit /tmp/spdio-notarize.zip \
     --apple-id "$APPLE_ID" \
     --password "$APP_PASSWORD" \
     --team-id "$TEAM_ID" \
     --wait
-  xcrun stapler staple dist/SongSplitter.app
+  xcrun stapler staple dist/Spdio.app
   fi
 else
   echo "==> Skipping notarize (set APPLE_ID, APP_PASSWORD, TEAM_ID to enable)."
 fi
 
 echo "==> Creating disk image ..."
-rm -f dist/SongSplitter.dmg SongSplitter-mac.zip
-hdiutil create -volname "Song Splitter" -srcfolder dist/SongSplitter.app \
-  -ov -format UDZO dist/SongSplitter.dmg
-ditto -c -k --keepParent --sequesterRsrc dist/SongSplitter.app SongSplitter-mac.zip
+rm -f dist/Spdio.dmg Spdio-mac.zip
+hdiutil create -volname "Spdio" -srcfolder dist/Spdio.app \
+  -ov -format UDZO dist/Spdio.dmg
+ditto -c -k --keepParent --sequesterRsrc dist/Spdio.app Spdio-mac.zip
 
 if [ -n "$IDENTITY" ]; then
-  codesign --force --sign "$IDENTITY" dist/SongSplitter.dmg || true
+  codesign --force --sign "$IDENTITY" dist/Spdio.dmg || true
 fi
 
 echo "==> Done:"
-ls -lh dist/SongSplitter.dmg SongSplitter-mac.zip
+ls -lh dist/Spdio.dmg Spdio-mac.zip

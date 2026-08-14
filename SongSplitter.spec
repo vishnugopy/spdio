@@ -21,6 +21,7 @@ hiddenimports += [
     "audio_sniff",
     "engine_bootstrap",
     "desktop",
+    "version",
     "lib",
     "lib.dataset",
     "lib.layers",
@@ -71,7 +72,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="SongSplitter",
+    name="Spdio",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -91,12 +92,12 @@ coll = COLLECT(
     strip=False,
     upx=False,
     upx_exclude=[],
-    name="SongSplitter",
+    name="Spdio",
 )
 
 app = BUNDLE(
     coll,
-    name="SongSplitter.app",
+    name="Spdio.app",
     icon="assets/AppIcon.icns",
-    bundle_identifier="com.songsplitter.app",
+    bundle_identifier="com.vishnugopy.spdio",
 )
