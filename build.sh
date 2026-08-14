@@ -74,10 +74,7 @@ else
 fi
 
 echo "==> Creating disk image ..."
-rm -f dist/Spdio.dmg Spdio-mac.zip
-hdiutil create -volname "Spdio" -srcfolder dist/Spdio.app \
-  -ov -format UDZO dist/Spdio.dmg
-ditto -c -k --keepParent --sequesterRsrc dist/Spdio.app Spdio-mac.zip
+./build_dmg.sh
 
 if [ -n "$IDENTITY" ]; then
   codesign --force --sign "$IDENTITY" dist/Spdio.dmg || true

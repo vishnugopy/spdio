@@ -96,6 +96,17 @@ def test_download_writes_ready_and_files(monkeypatch, tmp_path):
     assert ready["version"] == "1"
 
 
+def test_extract_wheel_restores_ffmpeg_executable_bit(tmp_path):
+    wheel = tmp_path / "ffmpeg.whl"
+    wheel.write_bytes(_zip_bytes({"imageio_ffmpeg/binaries/ffmpeg-test": b"binary"}))
+    dest = tmp_path / "engine"
+
+    engine_bootstrap._extract_wheel(wheel, dest)
+
+    binary = dest / "imageio_ffmpeg" / "binaries" / "ffmpeg-test"
+    assert binary.stat().st_mode & 0o111
+
+
 def test_bad_checksum_does_not_write_ready(monkeypatch, tmp_path):
     wheel, model = _wheel(), _model_zip()
     man = _manifest(wheel, model)

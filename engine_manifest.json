@@ -1,5 +1,5 @@
 {
-  "engine_version": "1",
+  "engine_version": "3",
   "min_free_bytes": 3000000000,
   "platforms": {
     "macos-arm64": {
@@ -28,6 +28,16 @@
           "name": "soundfile-0.14.0-py2.py3-none-macosx_11_0_arm64.whl",
           "url": "https://files.pythonhosted.org/packages/63/7a/dfdd6f8c748988427119f75eb860a3cedd858d1aea1fe28f39ad8559ef22/soundfile-0.14.0-py2.py3-none-macosx_11_0_arm64.whl",
           "sha256": "d828d35a059626da52f1415b5faee610aeab393319cb3fc4a9aef47b619fc14c"
+        },
+        {
+          "name": "cffi-2.1.0-cp312-cp312-macosx_11_0_arm64.whl",
+          "url": "https://files.pythonhosted.org/packages/4b/92/e7bb136ad6b5352603732cf907ef862ca103f20f2031c1735a46300c20c9/cffi-2.1.0-cp312-cp312-macosx_11_0_arm64.whl",
+          "sha256": "78474632761faa0fb96f30b1c928c84ebcf68713cbb80d15bab09dfe61640fde"
+        },
+        {
+          "name": "pycparser-3.0-py3-none-any.whl",
+          "url": "https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl",
+          "sha256": "b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992"
         },
         {
           "name": "imageio_ffmpeg-0.6.0-py3-none-macosx_11_0_arm64.whl",

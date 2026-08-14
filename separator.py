@@ -221,6 +221,7 @@ class VocalSeparator:
 
 
 def _load_audio(input_path):
+    import numpy as np
     import librosa
 
     return librosa.load(

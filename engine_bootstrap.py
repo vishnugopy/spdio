@@ -103,6 +103,7 @@ def activate():
         root = str(app_paths.engine_dir())
         if root not in sys.path:
             sys.path.insert(0, root)
+        _restore_executable_bits(app_paths.engine_dir())
 
 
 def _set(**fields):
@@ -170,10 +171,20 @@ def _mark_have(engine, name, sha256):
     side.write_text(sha256)
 
 
+def _restore_executable_bits(dest):
+    # zipfile does not reliably preserve executable bits from wheels. The
+    # imageio-ffmpeg wheel contains the actual ffmpeg binary, so restore its
+    # execute permission after extraction.
+    for path in dest.rglob("ffmpeg-*"):
+        if path.is_file():
+            path.chmod(path.stat().st_mode | 0o755)
+
+
 def _extract_wheel(wheel_path, dest):
     dest.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(wheel_path) as zf:
         zf.extractall(dest)
+    _restore_executable_bits(dest)
 
 
 def _extract_model(zip_path, dest_file):

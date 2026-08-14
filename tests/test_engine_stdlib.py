@@ -7,6 +7,14 @@ def test_timeit_is_required():
     assert "timeit" in ENGINE_STDLIB
 
 
+def test_cmath_is_required():
+    assert "cmath" in ENGINE_STDLIB
+
+
+def test_unittest_mock_is_required():
+    assert "unittest.mock" in ENGINE_STDLIB
+
+
 def test_engine_stdlib_modules_import():
     for name in ENGINE_STDLIB:
         importlib.import_module(name)
