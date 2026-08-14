@@ -107,6 +107,14 @@ def main():
     save(render(192), ICON_DIR / "icon-192.png")
     save(render(512), ICON_DIR / "icon-512.png")
     save(render(512, scale=0.62, rounded=False), ICON_DIR / "icon-512-maskable.png")
+    master = render(256)
+    save(master, ASSETS / "AppIcon.png")
+    ico = ASSETS / "AppIcon.ico"
+    master.save(
+        str(ico),
+        sizes=[(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)],
+    )
+    print("wrote", ico)
     if os.name == "posix" and shutil.which("iconutil"):
         make_icns()
 

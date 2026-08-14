@@ -20,12 +20,19 @@ from flask import (
     send_from_directory,
 )
 
+import logging
+
 import app_paths
 import audio_sniff
 import engine_bootstrap
 from separator import VocalSeparator
 
 app_paths.ensure_dirs()
+logging.basicConfig(
+    filename=str(app_paths.log_path()),
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 DATA = app_paths.jobs_root()
 JOBS_DIR = app_paths.jobs_dir()
 JOBS_FILE = app_paths.jobs_file()

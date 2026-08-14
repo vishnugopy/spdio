@@ -5,21 +5,43 @@ datas = []
 binaries = []
 hiddenimports = []
 
-# These packages ship dynamic libs / data files that PyInstaller's default
-# analysis does not always pick up. Collect them fully.
-for pkg in ("librosa", "soundfile", "imageio_ffmpeg"):
-    d, b, h = collect_all(pkg)
-    datas += d
-    binaries += b
-    hiddenimports += h
+d, b, h = collect_all("webview")
+datas += d
+binaries += b
+hiddenimports += h
 
-hiddenimports += ["lib", "lib.dataset", "lib.layers", "lib.nets", "lib.spec_utils"]
+hiddenimports += [
+    "app_paths",
+    "audio_sniff",
+    "engine_bootstrap",
+    "desktop",
+    "lib",
+    "lib.dataset",
+    "lib.layers",
+    "lib.nets",
+    "lib.spec_utils",
+]
 
-# Web assets + the pre-trained model so the friend needs no download.
 datas += [
     ("templates", "templates"),
     ("static", "static"),
-    ("models", "models"),
+    ("engine_manifest.json", "."),
+]
+
+excludes = [
+    "torch",
+    "torchvision",
+    "torchaudio",
+    "numpy",
+    "scipy",
+    "librosa",
+    "soundfile",
+    "imageio_ffmpeg",
+    "numba",
+    "llvmlite",
+    "sklearn",
+    "matplotlib",
+    "pandas",
 ]
 
 a = Analysis(
@@ -31,7 +53,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=excludes,
     noarchive=False,
 )
 
@@ -52,6 +74,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon="assets/AppIcon.ico",
 )
 
 coll = COLLECT(
