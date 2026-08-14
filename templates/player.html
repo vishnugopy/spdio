@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ job.original_name }} - Song Splitter</title>
+  <meta name="theme-color" content="#14112b" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <a href="/" class="btn btn-outline btn-sm back"><i data-lucide="arrow-left" class="ic"></i> Back</a>
+      <div class="app-title">
+        <h1>{{ job.original_name }}</h1>
+        <p>Vocals + Music player</p>
+      </div>
+    </header>
+
+    <div class="card player">
+      <div class="player-track" data-stream="vocals">
+        <div class="track-top">
+          <span class="track-label track-vocals">Vocals</span>
+          <div class="track-tools">
+            <button class="mute-btn" data-mute="vocals" title="Mute vocals"><i data-lucide="volume-2" class="ic"></i></button>
+            <input type="range" class="vol" data-vol="vocals" min="0" max="100" value="100" />
+          </div>
+        </div>
+        <canvas class="wave" id="wave-vocals" width="800" height="90"></canvas>
+      </div>
+
+      <div class="player-track" data-stream="music">
+        <div class="track-top">
+          <span class="track-label track-music">Music</span>
+          <div class="track-tools">
+            <button class="mute-btn" data-mute="music" title="Mute music"><i data-lucide="volume-2" class="ic"></i></button>
+            <input type="range" class="vol" data-vol="music" min="0" max="100" value="100" />
+          </div>
+        </div>
+        <canvas class="wave" id="wave-music" width="800" height="90"></canvas>
+      </div>
+
+      <div class="player-controls">
+        <button id="player-play" class="btn btn-play" aria-label="Play / pause"><i data-lucide="play" class="ic"></i></button>
+        <span id="player-current" class="time">0:00</span>
+        <input type="range" id="player-progress" class="progress" min="0" max="1000" value="0" />
+        <span id="player-duration" class="time">0:00</span>
+      </div>
+
+      <div class="player-downloads">
+        <a class="btn btn-outline" href="/api/download/{{ job.id }}/vocals" download="{{ vocal_name }}">
+          <i data-lucide="download" class="ic"></i> Download Vocals
+        </a>
+        <a class="btn btn-outline" href="/api/download/{{ job.id }}/music" download="{{ music_name }}">
+          <i data-lucide="download" class="ic"></i> Download Music
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/vendor/lucide.min.js"></script>
+  <script>window.__PLAYER__ = { id: "{{ job.id }}" };</script>
+  <script src="/static/player.js"></script>
+</body>
+</html>

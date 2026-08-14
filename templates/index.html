@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Song Splitter</title>
+  <meta name="theme-color" content="#14112b" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16.png" />
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Full-page drop overlay -->
+  <div id="drop-overlay" class="drop-overlay">
+    <div class="drop-overlay-box">
+      <i data-lucide="cloud-upload" class="ic"></i>
+      <p>Drop your songs anywhere to add them</p>
+      <span class="drop-hint">You can let go of the files anywhere on this screen</span>
+    </div>
+  </div>
+
+  <main class="container">
+    <header class="app-header">
+      <div class="logo"><i data-lucide="music" class="ic ic-lg"></i></div>
+      <div class="app-title">
+        <h1>Song Splitter</h1>
+        <p>Drop songs to separate the voice from the music. Finished songs stay saved until you delete them.</p>
+      </div>
+      <button id="install-btn" class="btn btn-outline btn-sm" hidden>
+        <i data-lucide="download" class="ic"></i> Install
+      </button>
+      <button id="shutdown-btn" class="btn btn-close-app" title="Close app &amp; stop server" aria-label="Close app and stop the server">
+        <i data-lucide="power" class="ic"></i>
+      </button>
+    </header>
+
+    <div class="card upload-card">
+      <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="Choose audio files">
+        <i data-lucide="cloud-upload" class="ic ic-xl"></i>
+        <p class="dz-title">Drag songs anywhere on this page, or <span class="browse">browse</span></p>
+        <p class="dz-hint">Add as many as you like — they are split one by one</p>
+        <input type="file" id="file-input" multiple accept="audio/*,.mp3,.mp3.mpeg,.mpeg,.wav,.m4a,.aac,.ogg,.flac,.aiff,.aif,.wma,.mp4,.m4v,.mov,.mkv" hidden />
+      </div>
+      <div id="error" class="error" hidden></div>
+    </div>
+
+    <section class="songs">
+      <div class="songs-head">
+        <h2>Your songs</h2>
+        <span id="count" class="count"></span>
+      </div>
+      <div id="queue-empty" class="empty">
+        <i data-lucide="list-music" class="ic ic-lg"></i>
+        <p>No songs yet. Drop one above to get started.</p>
+      </div>
+      <ul id="job-list" class="job-list"></ul>
+    </section>
+  </main>
+
+  <div id="shutdown-overlay" class="shutdown-overlay" hidden>
+    <div class="shutdown-box">
+      <i data-lucide="power" class="ic ic-lg"></i>
+      <p>Song Splitter has been shut down.</p>
+      <span id="shutdown-hint">Closing this tab automatically…</span>
+      <button id="close-tab-btn" class="btn btn-outline btn-sm">Close this tab</button>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>
+      Developed by <a href="https://vishnugopy.dev" target="_blank" rel="noopener noreferrer">vishnugopy.dev</a> &middot;
+      Open source
+    </p>
+  </footer>
+
+  <script src="/static/vendor/lucide.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

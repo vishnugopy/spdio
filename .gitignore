@@ -1,0 +1,27 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# AI model - downloaded automatically on first run (~60 MB)
+models/
+
+# Runtime data (created on first run)
+data/
+
+# Build / packaging output
+build/
+dist/
+SongSplitter-mac.zip
+*.log
+
+# macOS junk
+.DS_Store
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
