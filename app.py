@@ -429,13 +429,42 @@ def _handle_sigterm(signum, frame):
     threading.Thread(target=_force_exit, daemon=True).start()
 
 
+def _wait_ready(port, tries=150):
+    import urllib.request
+
+    url = "http://127.0.0.1:%s/api/history" % port
+    for _ in range(tries):
+        try:
+            urllib.request.urlopen(url, timeout=0.3)
+            return True
+        except Exception:
+            time.sleep(0.2)
+    return False
+
+
 if __name__ == "__main__":
     _load_jobs()
     threading.Thread(target=_worker_loop, daemon=True).start()
     if engine_bootstrap.needs_download():
         threading.Thread(target=_download_engine, daemon=True).start()
     port = int(os.environ.get("PORT", "0")) or _find_free_port()
-    if not os.environ.get("SONGSPLITTER_NO_BROWSER"):
-        threading.Thread(target=_open_browser, args=(port,), daemon=True).start()
+    use_window = not os.environ.get("SONGSPLITTER_NO_WINDOW")
+    if use_window:
+        os.environ["SONGSPLITTER_NO_BROWSER"] = "1"
+
+    def serve():
+        app.run(host="127.0.0.1", port=port, threaded=True)
+
     signal.signal(signal.SIGTERM, _handle_sigterm)
-    app.run(host="127.0.0.1", port=port, threaded=True)
+    if use_window:
+        threading.Thread(target=serve, daemon=True).start()
+        if not _wait_ready(port):
+            print("Song Splitter could not start the local server.", file=sys.stderr)
+            sys.exit(1)
+        import desktop
+
+        desktop.start_window(port)
+    else:
+        if not os.environ.get("SONGSPLITTER_NO_BROWSER"):
+            threading.Thread(target=_open_browser, args=(port,), daemon=True).start()
+        app.run(host="127.0.0.1", port=port, threaded=True)
