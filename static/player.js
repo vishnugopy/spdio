@@ -300,5 +300,16 @@
     }
   });
 
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a[href*='/api/download/']");
+    if (!a || !window.pywebview || !window.pywebview.api) return;
+    e.preventDefault();
+    const parts = a.getAttribute("href").split("/").filter(Boolean);
+    const jobId = parts[2];
+    const stream = parts[3];
+    const name = a.getAttribute("download") || (stream + ".mp3");
+    window.pywebview.api.save_stem(jobId, stream, name);
+  });
+
   refresh();
 })();

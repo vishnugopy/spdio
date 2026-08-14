@@ -159,6 +159,12 @@ def _upload_argv():
                 pass
 
 
+class _JsApi:
+    def save_stem(self, job_id, stream, suggested_name):
+        if _window:
+            save_stem(_window, job_id, stream, suggested_name)
+
+
 def start_window(port):
     import webview
 
@@ -171,6 +177,7 @@ def start_window(port):
         height=700,
         min_size=(720, 500),
         easy_drag=False,
+        js_api=_JsApi(),
     )
 
     def on_closed():

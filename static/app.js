@@ -242,68 +242,6 @@
       .catch((e) => showError(e.message));
   }
 
-  // ---- install as app (PWA) ----
-  const installBtn = document.getElementById("install-btn");
-  let installPrompt = null;
-
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
-  }
-
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    navigator.standalone === true;
-
-  if (isStandalone) {
-    hide(installBtn);
-  } else {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      installPrompt = e;
-      show(installBtn);
-    });
-  }
-
-  window.addEventListener("appinstalled", () => {
-    installPrompt = null;
-    hide(installBtn);
-  });
-
-  installBtn.addEventListener("click", async () => {
-    if (installPrompt) {
-      installPrompt.prompt();
-      await installPrompt.userChoice;
-      installPrompt = null;
-    }
-  });
-
-  // ---- shut down app & stop the server ----
-  const shutdownBtn = document.getElementById("shutdown-btn");
-  const shutdownOverlay = document.getElementById("shutdown-overlay");
-  const closeTabBtn = document.getElementById("close-tab-btn");
-  const shutdownHint = document.getElementById("shutdown-hint");
-
-  function tryCloseTab() {
-    try {
-      window.close();
-    } catch (e) {}
-    setTimeout(() => {
-      if (shutdownHint) shutdownHint.textContent = "You can now close this tab.";
-    }, 800);
-  }
-
-  shutdownBtn.addEventListener("click", () => {
-    shutdownBtn.disabled = true;
-    fetch("/api/shutdown", { method: "POST" }).catch(() => {});
-    setTimeout(() => {
-      show(shutdownOverlay);
-      refreshIcons();
-      setTimeout(tryCloseTab, 10000);
-    }, 400);
-  });
-
-  closeTabBtn.addEventListener("click", tryCloseTab);
-
   // ---- list event delegation ----
   jobList.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-action]");
