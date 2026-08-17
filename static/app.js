@@ -341,6 +341,7 @@
     const pct = typeof st.progress === "number" ? st.progress : 0;
     if (engineBar) engineBar.style.width = Math.min(pct, 100) + "%";
     engineDetail.textContent = st.error ? st.error : (pct ? pct + "%" : "");
+    if (engineRetry) engineRetry.disabled = !!st.downloading;
     if (st.error && !st.downloading) show(engineRetry);
     else hide(engineRetry);
     refreshIcons();
@@ -358,8 +359,15 @@
 
   if (engineRetry) {
     engineRetry.addEventListener("click", () => {
-      engineRetry.hidden = true;
-      fetch("/api/engine/retry", { method: "POST" }).catch(() => {});
+      engineRetry.disabled = true;
+      fetch("/api/engine/retry", { method: "POST" })
+        .then((r) => r.json())
+        .then(applyEngine)
+        .catch(() => {
+          engineRetry.disabled = false;
+          engineMessage.textContent = "Could not start the retry. Check the app connection and try again.";
+          show(engineRetry);
+        });
     });
   }
 

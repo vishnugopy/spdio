@@ -44,3 +44,28 @@ Keep the folder where it is — the launcher must stay next to the app files.
 - **Install fails**: delete the `venv` folder and run the launcher again.
 - **"Python could not be found"**: install Python from https://www.python.org/downloads/ (on Windows, tick *"Add python to PATH"*).
 - **Offline first run**: the AI model must be downloaded once. Run it once with internet.
+
+## Publishing the Mac app
+
+The public Mac build must be signed with an Apple **Developer ID Application**
+certificate and notarized. The release script refuses to create a distributable
+DMG when either requirement is missing, so an unsigned build is not accidentally
+published.
+
+Create a local `.env` file with Apple notarization credentials:
+
+```text
+APPLE_ID=your-apple-id@example.com
+APP_PASSWORD=your-app-specific-password
+TEAM_ID=your-team-id
+```
+
+Then run:
+
+```bash
+./build.sh
+```
+
+Publish `dist/Spdio.dmg` only after the script completes successfully. The
+recipient should be able to drag `Spdio.app` into Applications and open it
+without a Gatekeeper warning.

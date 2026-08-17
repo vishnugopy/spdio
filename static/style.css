@@ -552,7 +552,7 @@ body {
   padding: 24px;
 }
 
-.engine-box svg {
+.engine-box > svg {
   width: 44px;
   height: 44px;
   color: hsl(var(--brand));
