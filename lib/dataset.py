@@ -4,7 +4,6 @@ import random
 import numpy as np
 import torch
 import torch.utils.data
-from tqdm import tqdm
 
 try:
     from lib import spec_utils
@@ -206,6 +205,8 @@ def make_padding(width, cropsize, offset):
 
 
 def make_training_set(filelist, sr, hop_length, n_fft):
+    from tqdm import tqdm
+
     ret = []
     for X_path, y_path in tqdm(filelist):
         X, y, X_cache_path, y_cache_path = spec_utils.cache_or_load(
@@ -218,6 +219,8 @@ def make_training_set(filelist, sr, hop_length, n_fft):
 
 
 def make_validation_set(filelist, cropsize, sr, hop_length, n_fft, offset):
+    from tqdm import tqdm
+
     patch_list = []
     patch_dir = 'cs{}_sr{}_hl{}_nf{}_of{}'.format(cropsize, sr, hop_length, n_fft, offset)
     os.makedirs(patch_dir, exist_ok=True)
@@ -262,6 +265,7 @@ def get_oracle_data(X, y, oracle_loss, oracle_rate, oracle_drop_rate):
 if __name__ == "__main__":
     import sys
     import utils
+    from tqdm import tqdm
 
     mix_dir = sys.argv[1]
     inst_dir = sys.argv[2]

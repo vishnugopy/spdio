@@ -66,6 +66,6 @@ Then run:
 ./build.sh
 ```
 
-Publish `dist/Spdio.dmg` only after the script completes successfully. The
+Publish `dist/Spdio-<version>-macOS-<architecture>.dmg` only after the script completes successfully. The
 recipient should be able to drag `Spdio.app` into Applications and open it
 without a Gatekeeper warning.

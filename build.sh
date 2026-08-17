@@ -97,4 +97,4 @@ echo "==> Creating disk image ..."
 ./build_dmg.sh
 
 echo "==> Done:"
-ls -lh dist/Spdio.dmg
+ls -lh "dist/Spdio-$(./venv/bin/python -c 'import version; print(version.VERSION)')-macOS-$(uname -m).dmg"

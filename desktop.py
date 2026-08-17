@@ -8,8 +8,19 @@ from pathlib import Path
 import version
 
 ABOUT_TEXT = (
-    "%s\nVersion %s\nby %s\nRuns entirely on this computer."
-    % (version.APP_DISPLAY_NAME, version.VERSION, version.AUTHOR)
+    "%s\n"
+    "Version %s\n\n"
+    "Separates vocals and music locally on your Mac.\n"
+    "Your songs are never uploaded.\n\n"
+    "Created by %s\n"
+    "%s\n\n"
+    "Copyright © 2026 Vishnu Gopy."
+    % (
+        version.APP_DISPLAY_NAME,
+        version.VERSION,
+        version.AUTHOR,
+        version.AUTHOR_URL + "/spdio",
+    )
 )
 HELP_TEXT = (
     "Drop songs on the window or use File → Open. "

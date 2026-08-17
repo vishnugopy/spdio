@@ -4,7 +4,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP="$(pwd)/dist/Spdio.app"
-OUT="$(pwd)/dist/Spdio.dmg"
+APP_VERSION="$(./venv/bin/python -c 'import version; print(version.VERSION)')"
+APP_ARCH="$(uname -m)"
+OUT="$(pwd)/dist/Spdio-${APP_VERSION}-macOS-${APP_ARCH}.dmg"
 if [ ! -d "$APP" ]; then
   echo "Build dist/Spdio.app first." >&2
   exit 1

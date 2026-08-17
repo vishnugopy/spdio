@@ -3,9 +3,10 @@ import version
 
 
 def test_about_and_help_copy():
-    assert desktop.ABOUT_TEXT == (
-        "Spdio\nVersion %s\nby vishnugopy\nRuns entirely on this computer." % version.VERSION
-    )
+    assert "Spdio\nVersion %s" % version.VERSION in desktop.ABOUT_TEXT
+    assert "Your songs are never uploaded." in desktop.ABOUT_TEXT
+    assert "https://vishnugopy.dev/spdio" in desktop.ABOUT_TEXT
+    assert "Copyright © 2026 Vishnu Gopy." in desktop.ABOUT_TEXT
     assert desktop.HELP_TEXT == (
         "Drop songs on the window or use File → Open. Vocals and music stay on this computer."
     )
